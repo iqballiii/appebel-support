@@ -147,20 +147,20 @@
         <form id="supportForm">
             <div class="form-group">
                 <label for="name">Name</label>
-                <input type="text" id="name" name="name" required minlength="2" maxlength="100">
-                <div class="error-message" id="nameError">Please enter a valid name (at least 2 characters)</div>
+                <input type="text" id="name" name="name" required>
+                <div class="error-message" id="nameError">Name must be at least 2 characters</div>
             </div>
             
             <div class="form-group">
                 <label for="email">Email</label>
                 <input type="email" id="email" name="email" required>
-                <div class="error-message" id="emailError">Please enter a valid email address</div>
+                <div class="error-message" id="emailError">Please enter a valid email</div>
             </div>
             
             <div class="form-group">
                 <label for="feedback">Your Message</label>
-                <textarea id="feedback" name="feedback" required minlength="10" maxlength="1000" placeholder="Tell us how we can help..."></textarea>
-                <div class="error-message" id="feedbackError">Please enter a message (at least 10 characters)</div>
+                <textarea id="feedback" name="feedback" required placeholder="Tell us how we can help..."></textarea>
+                <div class="error-message" id="feedbackError">Message must be at least 10 characters</div>
             </div>
             
             <button type="submit" class="submit-btn">Submit</button>
@@ -177,116 +177,60 @@
         };
         
         // ============================================
-        // FORM VALIDATION
+        // FORM VALIDATION (REAL-TIME)
         // ============================================
         const form = document.getElementById('supportForm');
         const nameInput = document.getElementById('name');
         const emailInput = document.getElementById('email');
         const feedbackInput = document.getElementById('feedback');
+        const nameError = document.getElementById('nameError');
+        const emailError = document.getElementById('emailError');
+        const feedbackError = document.getElementById('feedbackError');
         
-        // Validation functions
-        function validateName(name) {
-            const trimmedName = name.trim();
-            if (trimmedName.length < 2) {
-                return { valid: false, message: 'Name must be at least 2 characters long' };
-            }
-            if (trimmedName.length > 100) {
-                return { valid: false, message: 'Name is too long (max 100 characters)' };
-            }
-            if (!/^[a-zA-Z\s'-]+$/.test(trimmedName)) {
-                return { valid: false, message: 'Name can only contain letters, spaces, hyphens, and apostrophes' };
-            }
-            return { valid: true, message: '' };
+        // Simple validation functions
+        function isValidName(name) {
+            return name.trim().length >= 2;
         }
         
-        function validateEmail(email) {
-            const trimmedEmail = email.trim();
-            if (trimmedEmail.length === 0) {
-                return { valid: false, message: 'Email is required' };
-            }
-            // More comprehensive email validation
+        function isValidEmail(email) {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(trimmedEmail)) {
-                return { valid: false, message: 'Please enter a valid email address' };
-            }
-            return { valid: true, message: '' };
+            return emailRegex.test(email.trim());
         }
         
-        function validateFeedback(feedback) {
-            const trimmedFeedback = feedback.trim();
-            if (trimmedFeedback.length < 10) {
-                return { valid: false, message: 'Message must be at least 10 characters long' };
-            }
-            if (trimmedFeedback.length > 1000) {
-                return { valid: false, message: 'Message is too long (max 1000 characters)' };
-            }
-            return { valid: true, message: '' };
+        function isValidFeedback(feedback) {
+            return feedback.trim().length >= 10;
         }
         
-        // Show/hide error messages
-        function showError(input, errorElement, message) {
-            input.classList.remove('success');
-            input.classList.add('error');
-            errorElement.textContent = message;
-            errorElement.classList.add('show');
+        // Update field status (border + error message)
+        function updateFieldStatus(input, errorElement, isValid) {
+            if (input.value.trim().length === 0) {
+                // Empty field - no validation shown
+                input.classList.remove('error', 'success');
+                errorElement.classList.remove('show');
+            } else if (isValid) {
+                // Valid - green border, hide error
+                input.classList.remove('error');
+                input.classList.add('success');
+                errorElement.classList.remove('show');
+            } else {
+                // Invalid - red border, show error
+                input.classList.remove('success');
+                input.classList.add('error');
+                errorElement.classList.add('show');
+            }
         }
         
-        function showSuccess(input, errorElement) {
-            input.classList.remove('error');
-            input.classList.add('success');
-            errorElement.classList.remove('show');
-        }
-        
-        function clearValidation(input, errorElement) {
-            input.classList.remove('error', 'success');
-            errorElement.classList.remove('show');
-        }
-        
-        // Real-time validation on blur (when user leaves field)
-        nameInput.addEventListener('blur', () => {
-            const validation = validateName(nameInput.value);
-            if (!validation.valid && nameInput.value.trim().length > 0) {
-                showError(nameInput, document.getElementById('nameError'), validation.message);
-            } else if (validation.valid) {
-                showSuccess(nameInput, document.getElementById('nameError'));
-            }
+        // Real-time validation on input (as user types)
+        nameInput.addEventListener('input', () => {
+            updateFieldStatus(nameInput, nameError, isValidName(nameInput.value));
         });
         
-        emailInput.addEventListener('blur', () => {
-            const validation = validateEmail(emailInput.value);
-            if (!validation.valid && emailInput.value.trim().length > 0) {
-                showError(emailInput, document.getElementById('emailError'), validation.message);
-            } else if (validation.valid) {
-                showSuccess(emailInput, document.getElementById('emailError'));
-            }
+        emailInput.addEventListener('input', () => {
+            updateFieldStatus(emailInput, emailError, isValidEmail(emailInput.value));
         });
         
-        feedbackInput.addEventListener('blur', () => {
-            const validation = validateFeedback(feedbackInput.value);
-            if (!validation.valid && feedbackInput.value.trim().length > 0) {
-                showError(feedbackInput, document.getElementById('feedbackError'), validation.message);
-            } else if (validation.valid) {
-                showSuccess(feedbackInput, document.getElementById('feedbackError'));
-            }
-        });
-        
-        // Clear validation on focus
-        nameInput.addEventListener('focus', () => {
-            if (nameInput.value.trim().length === 0) {
-                clearValidation(nameInput, document.getElementById('nameError'));
-            }
-        });
-        
-        emailInput.addEventListener('focus', () => {
-            if (emailInput.value.trim().length === 0) {
-                clearValidation(emailInput, document.getElementById('emailError'));
-            }
-        });
-        
-        feedbackInput.addEventListener('focus', () => {
-            if (feedbackInput.value.trim().length === 0) {
-                clearValidation(feedbackInput, document.getElementById('feedbackError'));
-            }
+        feedbackInput.addEventListener('input', () => {
+            updateFieldStatus(feedbackInput, feedbackError, isValidFeedback(feedbackInput.value));
         });
         
         // ============================================
@@ -295,24 +239,18 @@
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            // Validate all fields
-            const nameValidation = validateName(nameInput.value);
-            const emailValidation = validateEmail(emailInput.value);
-            const feedbackValidation = validateFeedback(feedbackInput.value);
+            // Final validation check
+            const nameValid = isValidName(nameInput.value);
+            const emailValid = isValidEmail(emailInput.value);
+            const feedbackValid = isValidFeedback(feedbackInput.value);
             
-            // Show errors if any
-            if (!nameValidation.valid) {
-                showError(nameInput, document.getElementById('nameError'), nameValidation.message);
-            }
-            if (!emailValidation.valid) {
-                showError(emailInput, document.getElementById('emailError'), emailValidation.message);
-            }
-            if (!feedbackValidation.valid) {
-                showError(feedbackInput, document.getElementById('feedbackError'), feedbackValidation.message);
-            }
+            // Update all fields to show errors if invalid
+            updateFieldStatus(nameInput, nameError, nameValid);
+            updateFieldStatus(emailInput, emailError, emailValid);
+            updateFieldStatus(feedbackInput, feedbackError, feedbackValid);
             
-            // Stop if validation fails
-            if (!nameValidation.valid || !emailValidation.valid || !feedbackValidation.valid) {
+            // Stop if any field is invalid
+            if (!nameValid || !emailValid || !feedbackValid) {
                 return;
             }
             
@@ -363,7 +301,17 @@
                 
             } catch (error) {
                 console.error('Submission error:', error);
-                alert('Oops! Something went wrong. Please try again.');
+                
+                // Show error message below submit button instead of popup
+                let errorMsg = document.getElementById('submitError');
+                if (!errorMsg) {
+                    errorMsg = document.createElement('div');
+                    errorMsg.id = 'submitError';
+                    errorMsg.style.cssText = 'color: #ff4444; text-align: center; margin-top: 16px; font-size: 14px;';
+                    submitBtn.parentElement.appendChild(errorMsg);
+                }
+                errorMsg.textContent = 'Something went wrong. Please try again.';
+                
                 submitBtn.disabled = false;
                 submitBtn.textContent = originalBtnText;
             }
