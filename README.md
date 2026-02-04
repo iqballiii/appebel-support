@@ -68,26 +68,23 @@ Currently in **TEST MODE**:
 
 ## ✅ Form Validation
 
-The form includes comprehensive validation:
+The form includes real-time validation that updates **as you type**:
 
 **Name Field:**
-- Minimum 2 characters
-- Maximum 100 characters
-- Only letters, spaces, hyphens, and apostrophes allowed
+- Must be at least 2 characters
 
 **Email Field:**
-- Valid email format required (example@domain.com)
-- Cannot be empty
+- Must be a valid email format
 
 **Message Field:**
-- Minimum 10 characters
-- Maximum 1000 characters
+- Must be at least 10 characters
 
-**Real-time Validation:**
-- Errors appear when you leave a field (on blur)
-- Green border shows valid input
-- Red border shows invalid input
-- Form cannot be submitted with invalid data
+**How it works:**
+- ✅ Green border = Valid input
+- ❌ Red border + error message = Invalid input
+- 💡 Validates in real-time as you type
+- 🚫 Form won't submit until all fields are valid
+- 📝 Clear, simple error messages below each field
 
 ## 📧 Support
 
