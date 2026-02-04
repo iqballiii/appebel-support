@@ -4,7 +4,7 @@ Simple support/feedback page for Appebel mobile application.
 
 ## 🌐 Live Website
 
-Visit: [https://iqballiii.github.io/appebel-support](https://iqballiii.github.io/appebel-support)
+Visit: [https://YOUR-USERNAME.github.io/appebel-support](https://YOUR-USERNAME.github.io/appebel-support)
 
 ## 📁 Files
 
@@ -65,6 +65,29 @@ Currently in **TEST MODE**:
 - Form submissions are logged to browser console
 - Open browser DevTools (F12) to see the logged data
 - Change `enabled: true` to connect real API
+
+## ✅ Form Validation
+
+The form includes comprehensive validation:
+
+**Name Field:**
+- Minimum 2 characters
+- Maximum 100 characters
+- Only letters, spaces, hyphens, and apostrophes allowed
+
+**Email Field:**
+- Valid email format required (example@domain.com)
+- Cannot be empty
+
+**Message Field:**
+- Minimum 10 characters
+- Maximum 1000 characters
+
+**Real-time Validation:**
+- Errors appear when you leave a field (on blur)
+- Green border shows valid input
+- Red border shows invalid input
+- Form cannot be submitted with invalid data
 
 ## 📧 Support
 
